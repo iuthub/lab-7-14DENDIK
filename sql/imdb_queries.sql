@@ -1,74 +1,44 @@
-/*1. What are the names of all movies released in 1995?*/
-SELECT movies.name
-FROM movies
-WHERE year = 1995;
+USE imdb_small;
 
-/*2. How many people played a part in the movie "Lost in Translation"?*/
-SELECT COUNT(roles.actor_id)
-FROM roles
-JOIN movies
-ON roles.movie_id = movies.id
-WHERE movies.name = "Lost in Translation";
+SELECT name FROM movies WHERE year = 1995;
 
-/*3. What are the names of all the people who played a part in the movie "Lost in Translation"?*/
-SELECT actors.first_name, actors.last_name
-FROM actors
-JOIN roles
-ON actors.id = roles.actor_id
-JOIN movies
-ON roles.movie_id = movies.id
-WHERE movies.name = "Lost in Translation";
+SELECT COUNT(*) FROM actors a
+    JOIN roles r ON a.id = r.actor_id
+    JOIN movies m ON r.movie_id = m.id
+    WHERE m.name = 'Lost in Translation';
 
-/*4. Who directed the movie "Fight Club"?*/
-SELECT *
-FROM directors
-JOIN movies_directors
-ON directors.id = movies_directors.director_id
-JOIN movies
-ON movies_directors.movie_id = movies.id
-WHERE movies.name = "Fight Club";
+SELECT a.first_name, a.last_name FROM actors a
+    JOIN roles r ON a.id = r.actor_id
+    JOIN movies m ON r.movie_id = m.id
+    WHERE m.name = 'Lost in Translation';
 
-/*5. How many movies has Clint Eastwood directed?*/
-SELECT COUNT(*)
-FROM movies
-JOIN movies_directors
-ON movies.id = movies_directors.movie_id
-JOIN directors
-ON movies_directors.director_id = directors.id
-WHERE directors.first_name = "Clint"
-AND directors.last_name = "Eastwood";
+SELECT d.first_name, d.last_name FROM directors d
+    JOIN movies_directors md ON d.id = md.director_id
+    JOIN movies m ON md.movie_id = m.id
+    WHERE m.name = 'Fight CLub';
 
-/*6. What are the names of all movies Clint Eastwood has directed?*/
-SELECT movies.name
-FROM movies
-JOIN movies_directors
-ON movies.id = movies_directors.movie_id
-JOIN directors
-ON movies_directors.director_id = directors.id
-WHERE directors.first_name = "Clint"
-AND directors.last_name = "Eastwood";
+SELECT COUNT(*) FROM directors
+    JOIN movies_directors ON id = director_id
+    WHERE first_name = 'Clint' AND last_name = 'Eastwood';
 
-/*7. What are the names of all directors who have directed at least one horrorfilm?*/
-SELECT directors.first_name, directors.last_name
-FROM directors
-JOIN movies_directors
-ON directors.id = movies_directors.director_id
-JOIN movies
-ON movies_directors.movie_id = movies.id
-JOIN movies_genres
-ON movies_genres.movie_id = movies.id
-WHERE movies_genres.genre = "Horror";
+SELECT m.name FROM movies m
+    JOIN movies_directors md ON m.id = md.movie_id
+    JOIN directors d ON md.director_id = d.id
+    WHERE d.first_name = 'Clint' AND d.last_name = 'Eastwood';
 
-/*8. What are the names of every actor who has appeared in a movie directed by Christopher Nolan?*/
-SELECT actors.first_name, actors.last_name
-FROM actors
-JOIN roles
-ON actors.id = roles.actor_id
-JOIN movies
-ON roles.movie_id = movies.id
-JOIN movies_directors
-ON movies.id = movies_directors.movie_id
-JOIN directors
-ON movies_directors.director_id = directors.id
-WHERE directors.first_name = "Christopher"
-AND directors.last_name = "Nolan";
+SELECT d.first_name, d.last_name FROM directors d
+    JOIN movies_directors md ON d.id = md.director_id
+    JOIN movies m ON md.movie_id = m.id
+    JOIN movies_genres mg ON m.id = mg.movie_id
+    WHERE mg.genre = 'Horror';
+
+SELECT d.first_name, d.last_name FROM directors d
+    JOIN directors_genres dg ON d.id = dg.director_id
+    WHERE dg.genre = 'Horror';
+
+SELECT DISTINCT a.first_name, a.last_name FROM actors a
+    JOIN roles r ON a.id = r.actor_id
+    JOIN movies m ON r.movie_id = m.id
+    JOIN movies_directors md ON m.id = md.movie_id
+    JOIN directors d ON md.director_id = d.id
+    WHERE d.first_name = 'Christopher' AND d.last_name = 'Nolan';
